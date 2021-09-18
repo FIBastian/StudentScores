@@ -1,9 +1,10 @@
-const { score } = require("../models/score");
+const { score, students } = require("../models/score");
 const Joi = require("joi");
 
 module.exports = {
     postScore: async (req, res) => {
         const body = req.body;
+        const file = req.file;
         try {
             const schema = Joi.object({
                 math: Joi.number().required(),
@@ -11,8 +12,9 @@ module.exports = {
                 algoritm: Joi.number().required(),
                 programming: Joi.number().required(),
                 studentId: Joi.number().required(),
-                scoreId: Joi.number().required()
             });
+
+            
 
             const { error } = schema.validate({
                 math: body.math,
@@ -20,7 +22,6 @@ module.exports = {
                 algoritm: body.algoritm,
                 programming: body.programming,
                 studentId: body.studentId,
-                scoreId: body.scoreId
             },
                 { abortEarly: false }
             );

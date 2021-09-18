@@ -1,5 +1,6 @@
-const { students } = require("../models/students");
+const { students, score } = require("../models");
 const Joi = require("joi");
+
 
 module.exports = {
     postStudents: async (req, res) => {
@@ -7,20 +8,16 @@ module.exports = {
         try {
             const schema = Joi.object({
                 name: Joi.string().required(),
-                dateOfBirth: Joi.date().required(),
+                dob: Joi.string().required(),
                 address: Joi.string().required(),
                 photo: Joi.string().required(),
-                scoreId: Joi.number().required(),
-                studentId: Joi.number().required()
             });
 
             const { error } = schema.validate({
                 name: body.name,
-                dateOfBirth: body.dateOfBirth,
+                dob: body.dob,
                 address: body.address,
-                photo: body.photo,
-                scoreId: body.scoreId,
-                studentId: body.studentId
+                photo: req.file.path,
             },
                 { abortEarly: false }
             );
@@ -34,11 +31,9 @@ module.exports = {
             }
             const check = await students.create({
                 name: body.name,
-                dateOfBirth: body.dateOfBirth,
+                dob: body.dob,
                 address: body.address,
-                photo: body.photo,
-                scoreId: body.scoreId,
-                studentId: body.studentId
+                photo: body.req.file.path,
             });
 
             if (!check) {
@@ -64,7 +59,12 @@ module.exports = {
 
     getStudents: async (req, res) => {
         try {
-            const Students = await students.findAll();
+            const Students = await students.findAll({
+                include: [{
+                    as: "scores",
+                    model: score
+                }]
+            });
             if (!Students) {
                 res.status(404).json({
                     status: "Failed",
@@ -92,21 +92,17 @@ module.exports = {
         const body = req.body;
         try {
             const schema = Joi.object({
-                name: Joi.string().required(),
-                dateOfBirth: Joi.date().required(),
+                name: Joi.string(),
+                dob: Joi.string(),
                 address: Joi.string().required(),
-                photo: Joi.string().required(),
-                scoreId: Joi.number().required(),
-                studentId: Joi.number().required()
+                photo: Joi.string().required()
             });
 
             const { error } = schema.validate({
                 name: body.name,
-                dateOfBirth: body.dateOfBirth,
+                dob: body.dob,
                 address: body.address,
-                photo: body.photo,
-                scoreId: body.scoreId,
-                studentId: body.studentId
+                photo: req.file ? req.file.path : "photo"
             },
                 { abortEarly: false }
             );
@@ -119,7 +115,10 @@ module.exports = {
                 });
             }
             const studentsUpdates = await students.update(
-                { ...body },
+                {
+                    ...body,
+                    [req.file ? "photo" : null]: req.file ? req.file.path : null
+                },
                 {
                     where:
                     {
@@ -173,7 +172,7 @@ module.exports = {
 
             return res.status(200).json({
                 status: "Success",
-                message: "Successfuly Retrieved Students Data"
+                message: "Data Deleted Successfully"
             });
 
         } catch (error) {

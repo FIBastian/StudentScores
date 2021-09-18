@@ -20,7 +20,6 @@ module.exports = (sequelize, DataTypes) => {
     algoritm: DataTypes.INTEGER,
     programming: DataTypes.INTEGER,
     studentId: DataTypes.INTEGER,
-    scoreId : DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'score',

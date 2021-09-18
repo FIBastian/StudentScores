@@ -11,27 +11,14 @@ module.exports = {
       name: {
         type: Sequelize.STRING
       },
-      dateOfBirth: {
-        type: Sequelize.DATE
+      dob: {
+        type: Sequelize.STRING
       },
       address: {
         type: Sequelize.STRING
       },
       photo: {
         type: Sequelize.STRING
-      },
-      scoreId: {
-        type: Sequelize.INTEGER
-      },
-      studentId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        refereces: {
-          model: 'admins',
-          key: 'id'
-        },
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE"
       },
       createdAt: {
         allowNull: false,

@@ -24,17 +24,15 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       studentId: {
-        type: Sequelize.INTEGER
-      },
-      scoreId: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        refereces: {
+        references: {
           model: 'students',
           key: 'id'
         },
         onUpdate: "CASCADE",
         onDelete: "CASCADE"
+
       },
       createdAt: {
         allowNull: false,
