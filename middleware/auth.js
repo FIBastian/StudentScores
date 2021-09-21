@@ -5,7 +5,7 @@ module.exports = async (req, res, next) => {
     try {
         const token = bearerToken.replace("Bearer ", "");
         const decoded = jwt.verify(token, "passwordKita");
-        req.user = decoded;
+        req.admin = decoded;
         next();
     } catch (error) {
         return res.status(401).json({

@@ -3,15 +3,14 @@ const { admin } = require("../models")
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
 
-
-
 module.exports = {
     register: async (req, res) => {
         const body = req.body
         try {
             const schema = Joi.object({
                 username: Joi.string().min(5).required(),
-                password: Joi.string().min(5).required()
+                password: Joi.string().min(5).required(),
+                email: Joi.string().email().required()
             });
 
             const check = schema.validate({ ...body }, { abortEarly: false });
@@ -39,14 +38,15 @@ module.exports = {
 
             const hashedPassword = await bcrypt.hash(body.password, 10);
 
-            const admin = await admin.create({
+            const admins = await admin.create({
+                username:body.username,
                 email: body.email,
                 password: hashedPassword
             });
 
             const payload = {
-                email: admin.dataValues.email,
-                id: admin.dataValues.id,
+                email: admins.dataValues.email,
+                id: admins.dataValues.id,
             };
 
             jwt.sign(payload, "passwordKita", { expiresIn: 3600 }, (err, token) => {

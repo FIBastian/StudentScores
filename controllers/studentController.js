@@ -33,7 +33,7 @@ module.exports = {
                 name: body.name,
                 dob: body.dob,
                 address: body.address,
-                photo: body.req.file.path,
+                photo: req.file.path,
             });
 
             if (!check) {
@@ -60,11 +60,56 @@ module.exports = {
     getStudents: async (req, res) => {
         try {
             const Students = await students.findAll({
-                include: [{
-                    as: "scores",
+                include: {
+                    as: "Summary",
                     model: score
-                }]
+                },
+                attributes: {
+                    exclude: ["studentId", "updatedAt"]
+                }
             });
+
+
+            if (!Students) {
+                res.status(404).json({
+                    status: "Failed",
+                    message: "Data Not Found",
+                    data: []
+                });
+            }
+
+            return res.status(200).json({
+                status: "Success",
+                message: "Successfuly Retrieved Students Data",
+                data: Students
+            })
+
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({
+                status: "Failed",
+                message: "Internal Server Error"
+            });
+        }
+    },
+
+    getStudent: async (req, res) => {
+        try {
+            const Students = await students.findOne({
+                where: {
+                    id: req.params.id,
+                },
+                attributes: {
+                    exclude: ["idBrand", "updatedAt"]
+                },
+                include: [
+                    {
+                        as: "Summary",
+                        model: score,
+                    },
+                ],
+            });
+
             if (!Students) {
                 res.status(404).json({
                     status: "Failed",
@@ -94,8 +139,8 @@ module.exports = {
             const schema = Joi.object({
                 name: Joi.string(),
                 dob: Joi.string(),
-                address: Joi.string().required(),
-                photo: Joi.string().required()
+                address: Joi.string(),
+                photo: Joi.string()
             });
 
             const { error } = schema.validate({

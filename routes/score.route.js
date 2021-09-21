@@ -4,9 +4,10 @@ const scores = require('../controllers/scoreController');
 const auth = require("../middleware/auth");
 
 
-router.post('/score', auth, scores.postScore)
-router.get('/score/:id', scores.getScore)
-router.put('/score/:id', scores.updateScore)
-router.delete('/score/:id', scores.deleteScore)
+router.post('/', auth, scores.postScore)
+router.get('/', scores.getScore)
+router.get('/:id', scores.getOne)
+router.put('/:id', auth, scores.updateScore)
+router.delete('/:id', auth, scores.deleteScore)
 
 module.exports = router

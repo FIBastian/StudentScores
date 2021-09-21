@@ -5,9 +5,10 @@ const auth = require("../middleware/auth");
 const upload = require("../middleware/upload");
 const uploadCloud = require("../middleware/uploadCloud");
 
-router.post('/student',auth, upload("photo"), student.postStudents)
-router.get('/student', student.getStudents)
-router.put('/student/:id', student.updateStudents)
-router.delete('/student/:id', student.deleteStudents)
+router.post('/', auth, upload("photo"), student.postStudents)
+router.get('/', student.getStudents)
+router.get('/:id', student.getStudent)
+router.put('/:id', auth, student.updateStudents)
+router.delete('/:id', auth, student.deleteStudents)
 
 module.exports = router
